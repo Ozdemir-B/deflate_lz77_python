@@ -99,12 +99,15 @@ class lz77:
 
 		
 		
-		wrt=open(text_name[0:len(text_name)-4]+"_encoded_txt"+".txt","w")
-		for i in encoded:
-			wrt.write("-"+str(i[0])+"-"+str(i[1])+"-"+i[2]+"\n")
-		wrt.close()
 		
-		wrt=open(text_name[0:len(text_name)-4]+"_encoded","wb"); pickle.dump(encoded,wrt) ; wrt.close()
+
+		finalstr=""
+
+		for i in encoded:
+			finalstr+=str(i[0])+"-"+ str(i[1]) +"-"+ i[2] +"\n"
+					
+		
+		wrt=open(text_name[0:len(text_name)-4]+"_encoded.txt","w");wrt.write(finalstr);wrt.close()
 
 		return encoded #list of tuple
 
@@ -114,8 +117,31 @@ class lz77:
 
 		decoded="" 
 		i=0
-		read=open(name,"rb")
-		triple=pickle.load(read)
+		read=open(name,"r").read()
+		triple=list()
+
+		temp_o="";temp_l="";temp_c="";count=0;i=0
+		while i<len(read):
+			if read[i] == "-":
+				count+=1
+				i+=1
+			if count is 0:
+				temp_o+=read[i]
+			if count is 1 :
+				temp_l+=read[i]
+			if count is 2:
+				temp_c+=read[i]
+			if read[i+1]=="\n":
+				triple.append((int(temp_o),int(temp_l),temp_c[0:len(temp_c)]))
+				temp_c=""
+				temp_o=""
+				temp_l=""
+				count=0
+				i+=1
+			i+=1
+
+		print(triple)
+
 		
 
 		for n,i in enumerate(triple):
@@ -130,7 +156,7 @@ class lz77:
 					a+=1
 				decoded+=i[2]
 
-		wrt=open(name+"_decoded.txt","w")
+		wrt=open(name[0:len(name)-4]+"_decoded.txt","w")
 		wrt.write(decoded)
 		wrt.close()
 
@@ -253,7 +279,7 @@ class deflate:
 				temp_c+=key_s[i]
 			if count is 2:
 				temp_b+=key_s[i]
-			if key_s[i]=="\n":
+			if (key_s[i]=="\n"):
 				lists.append([(int(temp_l),temp_c),temp_b[0:len(temp_b)-1]])
 				temp_c=""
 				temp_b=""
@@ -304,7 +330,12 @@ class deflate:
 		
 
 		#writing lz to a file to reconstruct from the lz77 form
-		wrtt=open(self.file_name[0:len(self.file_name)-4]+"_unhuffed","wb");pickle.dump(lz,wrtt);wrtt.close()
+		finalstr=""
+
+		for i in lz:
+			finalstr+=str(i[0])+"-"+ str(i[1]) +"-"+ i[2] +"\n"
+
+		wrtt=open(self.file_name[0:len(self.file_name)-4]+"_unhuffed.txt","w");wrtt.write(finalstr);wrtt.close()
 
 
 	def decode(self,file,key_o,key_s): 
@@ -314,4 +345,4 @@ class deflate:
 		self.file_name=file
 
 		self.huffman_decode(deflated,keyo,keys)
-		final_decoded=lz77().decode(file[0:len(file)-4]+"_unhuffed")	
+		final_decoded=lz77().decode(file[0:len(file)-4]+"_unhuffed.txt")	
