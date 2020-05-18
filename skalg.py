@@ -279,7 +279,7 @@ class deflate:
 				temp_c+=key_s[i]
 			if count is 2:
 				temp_b+=key_s[i]
-			if (key_s[i]=="\n"):
+			if (key_s[i]=="\n" and count == 2):
 				lists.append([(int(temp_l),temp_c),temp_b[0:len(temp_b)-1]])
 				temp_c=""
 				temp_b=""
