@@ -1,3 +1,5 @@
+!!! Requires Python 3.7
+
 # deflate_lz77_python
 python implamentation for deflate and lz77 text compression algorithms
 
